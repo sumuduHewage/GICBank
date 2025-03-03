@@ -29,7 +29,7 @@ public class Main {
                     inputHandler.handleInterestRuleInput();
                     break;
                 case PRINT:
-                    bankService.printStatements();
+                    inputHandler.handlePrintStatementInput();
                     break;
                 case QUIT:
                     System.out.println(GOODBYE_MESSAGE);

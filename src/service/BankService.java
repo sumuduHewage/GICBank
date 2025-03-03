@@ -1,31 +1,35 @@
 package service;
 
 import model.BankAccount;
+import model.InterestRule;
+
+import java.util.List;
 
 public interface BankService {
 
     /**
      * processes a banking transaction.
      *
-     * @param date          Transaction date in YYYYMMDD format
-     * @param accountNumber Account number
-     * @param type          Transaction type ("D" for deposit, "W" for withdrawal)
-     * @param amount        Transaction amount
+     * @param date          transaction date in YYYYMMDD format
+     * @param accountNumber account number
+     * @param type          transaction type ("D" for deposit, "W" for withdrawal)
+     * @param amount        transaction amount
      */
     void processTransaction(String date, String accountNumber, String type, double amount);
 
     /**
      * define interest rate for a given account.
      *
-     * @param accountNumber Account number
-     * @param interestRate  Interest rate percentage
+     * @param date         transaction date in YYYYMMDD format
+     * @param ruleId       account number
+     * @param interestRate interest rate percentage
      */
-    void defineInterestRate(String accountNumber, double interestRate);
+    void defineInterestRule(String date, String ruleId, double interestRate);
 
     /**
-     * prints statements for all accounts, including transactions and interest earned.
+     * prints interest rules
      */
-    void printStatements();
+    void printInterestRules();
 
     /**
      * fetch an account by its number.
@@ -34,4 +38,13 @@ public interface BankService {
      * @return BankAccount object if found, otherwise null
      */
     BankAccount getAccount(String accountNumber);
+
+    List<InterestRule> getInterestRules();
+
+    /**
+     * prints account statements for all accounts
+     */
+    void printAccountStatement(String accountNumber, String yearMonth);
+
+
 }
