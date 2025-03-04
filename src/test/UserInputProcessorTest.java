@@ -28,18 +28,6 @@ class UserInputProcessorTest {
     }
 
     @Test
-    void testHandleTransactionInput_ValidInput() {
-        String input = "20231015 AC001 D 100.50\n";
-        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        scanner = new Scanner(inputStream);
-        userInputProcessor = new UserInputProcessor(bankService, scanner);
-
-        userInputProcessor.handleTransactionInput();
-
-        verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
-    }
-
-    @Test
     void testHandleTransactionInput_InvalidDateFormat() {
         String input = "20231515 AC001 D 100.50\n\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
@@ -76,20 +64,8 @@ class UserInputProcessorTest {
     }
 
     @Test
-    void testHandleInterestRuleInput_ValidInput() {
-        String input = "20231015 RULE01 5.0\nQ\n";
-        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        scanner = new Scanner(inputStream);
-        userInputProcessor = new UserInputProcessor(bankService, scanner);
-
-        userInputProcessor.handleInterestRuleInput();
-
-        verify(bankService, times(1)).defineInterestRule("20231015", "RULE01", 5.0);
-    }
-
-    @Test
     void testHandleInterestRuleInput_InvalidDateFormat() {
-        String input = "20231515 RULE01 5.0\n";
+        String input = "20231515 RULE01 5.0\n\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         scanner = new Scanner(inputStream);
         userInputProcessor = new UserInputProcessor(bankService, scanner);
@@ -101,7 +77,7 @@ class UserInputProcessorTest {
 
     @Test
     void testHandleInterestRuleInput_InvalidRate() {
-        String input = "20231015 RULE01 105.0\n";
+        String input = "20231015 RULE01 105.0\n\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         scanner = new Scanner(inputStream);
         userInputProcessor = new UserInputProcessor(bankService, scanner);
@@ -112,8 +88,32 @@ class UserInputProcessorTest {
     }
 
     @Test
+    void testHandlePrintStatementInput_InvalidFormat() {
+        String input = "AC001 2023\n\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handlePrintStatementInput();
+
+        verify(bankService, never()).printAccountStatement(any(), any());
+    }
+
+    @Test
+    void testHandleTransactionInput_ValidInput() {
+        String input = "20231015 AC001 D 100.50\n\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handleTransactionInput();
+
+        verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
+    }
+
+    @Test
     void testHandlePrintStatementInput_ValidInput() {
-        String input = "AC001 202310\n";
+        String input = "AC001 202310\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         scanner = new Scanner(inputStream);
         userInputProcessor = new UserInputProcessor(bankService, scanner);
@@ -124,15 +124,15 @@ class UserInputProcessorTest {
     }
 
     @Test
-    void testHandlePrintStatementInput_InvalidFormat() {
-        String input = "AC001 2023\n";
+    void testHandleInterestRuleInput_ValidInput() {
+        String input = "20231015 RULE01 5.0\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         scanner = new Scanner(inputStream);
         userInputProcessor = new UserInputProcessor(bankService, scanner);
 
-        userInputProcessor.handlePrintStatementInput();
+        userInputProcessor.handleInterestRuleInput();
 
-        verify(bankService, never()).printAccountStatement(any(), any());
+        verify(bankService, times(1)).defineInterestRule("20231015", "RULE01", 5.0);
     }
 
     @Test
