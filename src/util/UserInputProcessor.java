@@ -23,7 +23,11 @@ public class UserInputProcessor {
         while (true) {
             System.out.print("> ");
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()) return;
+
+            if (input.isEmpty()) {
+                System.out.println("Returning to main menu...");
+                return;
+            }
 
             String[] parts = input.split(" ");
             if (!isValidTransactionFormat(parts)) {
@@ -157,7 +161,7 @@ public class UserInputProcessor {
      * @param date The date string to validate.
      * @return true if the date is in valid format, false otherwise.
      */
-    private boolean isValidDate(String date) {
+    public boolean isValidDate(String date) {
         if (!DATE_PATTERN.matcher(date).matches()) {
             System.out.println(INVALID_DATE);
             return false;
@@ -171,7 +175,7 @@ public class UserInputProcessor {
      * @param type The transaction type.
      * @return true if type is valid, false otherwise.
      */
-    private boolean isValidType(String type) {
+    public boolean isValidType(String type) {
         if (!type.equals(DEPOSIT) && !type.equals(WITHDRAWAL)) {
             System.out.println(INVALID_TRANSACTION_TYPE);
             return false;
@@ -185,7 +189,7 @@ public class UserInputProcessor {
      * @param amountStr The amount string to validate.
      * @return true if the amount is valid, false otherwise.
      */
-    private boolean isValidAmount(String amountStr) {
+    public boolean isValidAmount(String amountStr) {
         if (!AMOUNT_PATTERN.matcher(amountStr).matches()) {
             System.out.println(INVALID_AMOUNT);
             return false;

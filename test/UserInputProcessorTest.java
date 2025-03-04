@@ -1,54 +1,170 @@
-/*
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import service.BankService;
 import util.UserInputProcessor;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Scanner;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class UserInputProcessorTest {
+class UserInputProcessorTest {
+
+    @Mock
     private BankService bankService;
+
+    private UserInputProcessor userInputProcessor;
     private Scanner scanner;
-    private UserInputProcessor inputProcessor;
 
     @BeforeEach
     void setUp() {
-        bankService = mock(BankService.class);
-        scanner = mock(Scanner.class);
-        inputProcessor = new UserInputProcessor(bankService, scanner);
+        MockitoAnnotations.openMocks(this);
+        userInputProcessor = new UserInputProcessor(bankService, new Scanner(System.in));
     }
 
     @Test
-    void testHandleTransactionInput_ValidDeposit() {
-        when(scanner.nextLine()).thenReturn("20250326 AC001 D 150.00", "");
+    void testHandleTransactionInput_ValidInput() {
+        String input = "20231015 AC001 D 100.50\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
 
-        inputProcessor.handleTransactionInput();
+        userInputProcessor.handleTransactionInput();
 
-        verify(bankService, times(1)).processTransaction("20250326", "AC001", "D", 150.00);
+        verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
     }
 
     @Test
-    void testHandleTransactionInput_InvalidFormat() {
-        when(scanner.nextLine()).thenReturn("invalid input", "");
+    void testHandleTransactionInput_InvalidDateFormat() {
+        String input = "20231515 AC001 D 100.50\n\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
 
-        inputProcessor.handleTransactionInput();
+        userInputProcessor.handleTransactionInput();
 
-        verify(bankService, never()).processTransaction(anyString(), anyString(), anyString(), anyDouble());
+        verify(bankService, never()).processTransaction(any(), any(), any(), anyDouble());
     }
 
     @Test
-    void testHandleTransactionInput_InvalidAmount() {
-        when(scanner.nextLine()).thenReturn("20250326 AC001 D -50.00", "");
+    void testHandleTransactionInput_InvalidTransactionType() {
+        String input = "20231015 AC001 X 100.50\n\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
 
-        inputProcessor.handleTransactionInput();
+        userInputProcessor.handleTransactionInput();
 
-        verify(bankService, never()).processTransaction(anyString(), anyString(), anyString(), anyDouble());
+        verify(bankService, never()).processTransaction(any(), any(), any(), anyDouble());
+    }
+
+    @Test
+    void testHandleTransactionInput_InvalidAmountFormat() {
+        String input = "20231015 AC001 D ABC\n\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handleTransactionInput();
+
+        verify(bankService, never()).processTransaction(any(), any(), any(), anyDouble());
+    }
+
+    @Test
+    void testHandleInterestRuleInput_ValidInput() {
+        String input = "20231015 RULE01 5.0\nQ\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handleInterestRuleInput();
+
+        verify(bankService, times(1)).defineInterestRule("20231015", "RULE01", 5.0);
+    }
+
+    @Test
+    void testHandleInterestRuleInput_InvalidDateFormat() {
+        String input = "20231515 RULE01 5.0\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handleInterestRuleInput();
+
+        verify(bankService, never()).defineInterestRule(any(), any(), anyDouble());
+    }
+
+    @Test
+    void testHandleInterestRuleInput_InvalidRate() {
+        String input = "20231015 RULE01 105.0\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handleInterestRuleInput();
+
+        verify(bankService, never()).defineInterestRule(any(), any(), anyDouble());
+    }
+
+    @Test
+    void testHandlePrintStatementInput_ValidInput() {
+        String input = "AC001 202310\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handlePrintStatementInput();
+
+        verify(bankService, times(1)).printAccountStatement("AC001", "202310");
+    }
+
+    @Test
+    void testHandlePrintStatementInput_InvalidFormat() {
+        String input = "AC001 2023\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        scanner = new Scanner(inputStream);
+        userInputProcessor = new UserInputProcessor(bankService, scanner);
+
+        userInputProcessor.handlePrintStatementInput();
+
+        verify(bankService, never()).printAccountStatement(any(), any());
+    }
+
+    @Test
+    void testIsValidDate_ValidDate() {
+        assertTrue(userInputProcessor.isValidDate("20231015"));
+    }
+
+    @Test
+    void testIsValidDate_InvalidDate() {
+        assertFalse(userInputProcessor.isValidDate("20231515"));
+    }
+
+    @Test
+    void testIsValidType_ValidType() {
+        assertTrue(userInputProcessor.isValidType("D"));
+        assertTrue(userInputProcessor.isValidType("W"));
+    }
+
+    @Test
+    void testIsValidType_InvalidType() {
+        assertFalse(userInputProcessor.isValidType("X"));
+    }
+
+    @Test
+    void testIsValidAmount_ValidAmount() {
+        assertTrue(userInputProcessor.isValidAmount("100.50"));
+        assertTrue(userInputProcessor.isValidAmount("-100.50"));
+    }
+
+    @Test
+    void testIsValidAmount_InvalidAmount() {
+        assertFalse(userInputProcessor.isValidAmount("ABC"));
+        assertFalse(userInputProcessor.isValidAmount("100.555"));
     }
 }
-*/
