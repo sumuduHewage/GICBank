@@ -110,9 +110,7 @@ class UserInputProcessorTest {
         bankService = spy(realBankService);
 
         userInputProcessor = new UserInputProcessor(bankService, testScanner);
-
         userInputProcessor.handleTransactionInput();
-
         verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
 
         BankAccount account = bankService.getAccount("AC001");
@@ -120,30 +118,42 @@ class UserInputProcessorTest {
         assertEquals(1, account.getTransactions().size());
     }
 
-
     @Test
     void testHandlePrintStatementInput_ValidInput() {
         String input = "AC001 202310\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        scanner = new Scanner(inputStream);
-        userInputProcessor = new UserInputProcessor(bankService, scanner);
+        Scanner testScanner = new Scanner(inputStream);
 
+        BankServiceImpl realBankService = new BankServiceImpl();
+        bankService = spy(realBankService);
+
+        userInputProcessor = new UserInputProcessor(bankService, testScanner);
         userInputProcessor.handlePrintStatementInput();
+        verify(bankService, times(1)).printAccountStatement(eq("AC001"), eq("202310"));
 
-        verify(bankService, times(1)).printAccountStatement("AC001", "202310");
+        BankAccount account = bankService.getAccount("AC001");
+        assertNotNull(account);
+        assertEquals(1, account.getTransactions().size());
     }
 
     @Test
     void testHandleInterestRuleInput_ValidInput() {
         String input = "20231015 RULE01 5.0\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        scanner = new Scanner(inputStream);
-        userInputProcessor = new UserInputProcessor(bankService, scanner);
+        Scanner testScanner = new Scanner(inputStream);
 
+        BankServiceImpl realBankService = new BankServiceImpl();
+        bankService = spy(realBankService);
+
+        userInputProcessor = new UserInputProcessor(bankService, testScanner);
         userInputProcessor.handleInterestRuleInput();
+        verify(bankService, times(1)).defineInterestRule(eq("20231015"), eq("RULE01"), eq(5.0));
 
-        verify(bankService, times(1)).defineInterestRule("20231015", "RULE01", 5.0);
+        BankAccount account = bankService.getAccount("AC001");
+        assertNotNull(account);
+        assertEquals(1, account.getTransactions().size());
     }
+
 
     @Test
     void testIsValidDate_ValidDate() {
