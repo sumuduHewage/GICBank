@@ -92,7 +92,7 @@ public class BankServiceImpl implements BankService {
     @Override
     public List<InterestRule> getInterestRules() {
         List<InterestRule> sortedRules = new ArrayList<>(interestRules.values());
-        sortedRules.sort(Comparator.comparing(InterestRule::getDate)); // sort by date
+        sortedRules.sort(Comparator.comparing(InterestRule::getDate));
         return sortedRules;
     }
 

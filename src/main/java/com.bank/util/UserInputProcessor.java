@@ -55,7 +55,7 @@ public class UserInputProcessor {
                 // prompt user for next action
                 askForNextAction();
             } catch (NumberFormatException e) {
-                System.out.println("Invalid amount! Must be a valid number with up to 2 decimal places.");
+                System.out.println("Invalid amount! must be a valid number with up to 2 decimal places.");
             }
         }
     }
@@ -70,7 +70,7 @@ public class UserInputProcessor {
 
             String[] parts = input.split(" ");
             if (parts.length != 3) {
-                System.out.println("Invalid format! Enter data as: YYYYMMDD RuleId Rate(%)");
+                System.out.println("Invalid format! Enter data as: YYYYMMDD ruleId rate(%)");
                 continue;
             }
 
