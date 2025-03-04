@@ -1,4 +1,5 @@
-import model.Transaction;
+
+import com.bank.model.Transaction;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

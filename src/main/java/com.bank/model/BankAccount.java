@@ -1,10 +1,11 @@
-package model;
+package com.bank.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static util.BankTermConstants.DEPOSIT;
-import static util.BankTermConstants.WITHDRAWAL;
+import static com.bank.util.BankTermConstants.DEPOSIT;
+import static com.bank.util.BankTermConstants.WITHDRAWAL;
+
 
 public class BankAccount {
     private final String accountNumber;

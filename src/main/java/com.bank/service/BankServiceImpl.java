@@ -1,8 +1,8 @@
-package service;
+package com.bank.service;
 
-import model.BankAccount;
-import model.InterestRule;
-import model.Transaction;
+import com.bank.model.BankAccount;
+import com.bank.model.InterestRule;
+import com.bank.model.Transaction;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

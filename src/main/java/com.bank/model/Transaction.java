@@ -1,4 +1,4 @@
-package model;
+package com.bank.model;
 
 public class Transaction {
     private final String date;

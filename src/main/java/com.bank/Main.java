@@ -1,10 +1,13 @@
-import service.BankService;
-import service.BankServiceImpl;
-import util.UserInputProcessor;
+package com.bank;
+
+
+import com.bank.service.BankService;
+import com.bank.service.BankServiceImpl;
+import com.bank.util.UserInputProcessor;
 
 import java.util.Scanner;
 
-import static util.BankTermConstants.*;
+import static com.bank.util.BankTermConstants.*;
 
 public class Main {
     public static void main(String[] args) {

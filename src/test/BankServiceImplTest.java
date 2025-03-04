@@ -1,7 +1,9 @@
-import model.BankAccount;
+
+
+import com.bank.model.BankAccount;
+import com.bank.service.BankServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.BankServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

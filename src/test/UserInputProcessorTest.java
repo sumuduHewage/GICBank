@@ -1,9 +1,9 @@
+import com.bank.service.BankService;
+import com.bank.util.UserInputProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import service.BankService;
-import util.UserInputProcessor;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -11,7 +11,8 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 class UserInputProcessorTest {
 

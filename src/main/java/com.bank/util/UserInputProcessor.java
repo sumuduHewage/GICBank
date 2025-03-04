@@ -1,11 +1,11 @@
-package util;
+package com.bank.util;
 
-import service.BankService;
+import com.bank.service.BankService;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import static util.BankTermConstants.*;
+import static com.bank.util.BankTermConstants.*;
 
 public class UserInputProcessor {
     private static final Pattern DATE_PATTERN = Pattern.compile("^\\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])$");

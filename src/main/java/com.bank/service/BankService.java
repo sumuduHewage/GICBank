@@ -1,7 +1,8 @@
-package service;
+package com.bank.service;
 
-import model.BankAccount;
-import model.InterestRule;
+
+import com.bank.model.BankAccount;
+import com.bank.model.InterestRule;
 
 import java.util.List;
 

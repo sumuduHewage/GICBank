@@ -1,4 +1,4 @@
-package util;
+package com.bank.util;
 
 public class BankTermConstants {
     public static final String MENU_WELCOME = "\nWelcome to AwesomeGIC Bank! What would you like to do?";

@@ -1,4 +1,4 @@
-package model;
+package com.bank.model;
 
 public class InterestRule {
     private final String date;
