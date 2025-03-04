@@ -101,7 +101,7 @@ class UserInputProcessorTest {
 
     @Test
     void testHandleTransactionInput_ValidInput() {
-        String input = "20231015 AC001 D 100.50\n\n";
+        String input = "20231015 AC001 D 100.50\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         scanner = new Scanner(inputStream);
         userInputProcessor = new UserInputProcessor(bankService, scanner);
@@ -110,6 +110,7 @@ class UserInputProcessorTest {
 
         verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
     }
+
 
     @Test
     void testHandlePrintStatementInput_ValidInput() {
