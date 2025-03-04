@@ -1,4 +1,6 @@
+import com.bank.model.BankAccount;
 import com.bank.service.BankService;
+import com.bank.service.BankServiceImpl;
 import com.bank.util.UserInputProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class UserInputProcessorTest {
@@ -101,14 +102,22 @@ class UserInputProcessorTest {
 
     @Test
     void testHandleTransactionInput_ValidInput() {
-        String input = "20231015 AC001 D 100.50\nQ\n";
+        String input = "20231015 AC001 D 100.50\n\nQ\n";
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        scanner = new Scanner(inputStream);
-        userInputProcessor = new UserInputProcessor(bankService, scanner);
+        Scanner testScanner = new Scanner(inputStream);
+
+        BankServiceImpl realBankService = new BankServiceImpl();
+        bankService = spy(realBankService);
+
+        userInputProcessor = new UserInputProcessor(bankService, testScanner);
 
         userInputProcessor.handleTransactionInput();
 
         verify(bankService, times(1)).processTransaction("20231015", "AC001", "D", 100.50);
+
+        BankAccount account = bankService.getAccount("AC001");
+        assertNotNull(account);
+        assertEquals(1, account.getTransactions().size());
     }
 
 
